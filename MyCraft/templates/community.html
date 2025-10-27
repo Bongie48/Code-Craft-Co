@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Community Forum | DangerAlert</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ff4d4d, #D3D3D3);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Navbar */
+    nav {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px 40px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      backdrop-filter: blur(12px);
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    nav h1 { font-size: 1.8em; margin: 0; }
+    nav h1::after { content: '✨'; margin-left: 10px; }
+    .profile { display: flex; align-items: center; gap: 15px; }
+    .profile span { font-weight: 600; }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 20px;
+      padding: 8px 18px;
+      border: 1px solid #fff;
+      border-radius: 25px;
+      transition: background 0.3s, transform 0.2s;
+      font-weight: 600;
+    }
+    nav a:hover { background: #fff; color: #4b0082; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+      height: 100vh;
+      padding-top: 80px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 2px 0 15px rgba(0,0,0,0.2);
+      backdrop-filter: blur(8px);
+    }
+    .sidebar a.sidebar-btn {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 80%;
+      padding: 15px;
+      margin: 8px 0;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .sidebar a.sidebar-btn:hover {
+      background: rgba(255,255,255,0.3);
+      box-shadow: 0 0 10px #fff inset, 0 0 20px #fff;
+      transform: translateY(-2px);
+    }
+
+    /* Chat content */
+    .content {
+      margin-top: 80px;
+      margin-left: 250px;
+      height: calc(100vh - 80px);
+      display: flex;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    #messages {
+      flex: 1;
+      background: rgba(255,255,255,0.1);
+      padding: 10px;
+      border-radius: 8px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Chat bubbles (public + private unified style) */
+    .chat-bubble {
+      max-width: 70%;
+      padding: 10px 14px;
+      border-radius: 20px;
+      word-wrap: break-word;
+      display: inline-block;
+      font-size: 15px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .chat-bubble.sent {
+      background: #dcf8c6; /* WhatsApp green */
+      align-self: flex-end;
+      border-bottom-right-radius: 2px;
+      color: #000;
+    }
+    .chat-bubble.received {
+      background: #fff;
+      align-self: flex-start;
+      border-bottom-left-radius: 2px;
+      color: #000;
+    }
+
+    #messageInput { margin-top: 10px; display: flex; }
+    #messageInput input {
+      flex: 1; padding: 10px; border-radius: 20px; border: none; outline: none;
+    }
+    #messageInput button {
+      margin-left: 10px; padding: 10px 20px; border-radius: 20px;
+      border: none; background-color: #fff; color: #4b0082;
+      font-weight: bold; cursor: pointer;
+    }
+
+    /* User list */
+    #userPanel {
+      width: 250px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 10px;
+      margin-left: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .user {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.15);
+      margin-bottom: 5px;
+      transition: 0.3s;
+    }
+    .user:hover, .user.selected { background: rgba(255,255,255,0.3); }
+
+    #openPrivateChatBtn {
+      padding: 10px 12px;
+      border: none;
+      border-radius: 6px;
+      background: #4b0082;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    #openPrivateChatBtn:hover { background: #fff; color: #4b0082; }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <h1>🛡️ Safe Connect</h1>
+    <div class="profile">
+      <span>👋 Welcome, gxekiwe48</span>
+      <a href="/logout"><i class="fas fa-door-open"></i> Logout</a>
+    </div>
+  </nav>
+
+  <div class="sidebar">
+    <a href="/dashboard" class="sidebar-btn"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="/safety-map" class="sidebar-btn"><i class="fas fa-map"></i> Safety Map</a>
+    <a href="/community" class="sidebar-btn"><i class="fas fa-comments"></i> Community Forum</a>
+    <a href="/emergency_alert" class="sidebar-btn"><i class="fas fa-bolt"></i> Emergency Alert</a>
+    <a href="/incident_reporting" class="sidebar-btn"><i class="fas fa-edit"></i> Incident Reporting</a>
+    <a href="/safety_resources" class="sidebar-btn"><i class="fas fa-book"></i> Safety Resources</a>
+  </div>
+
+  <!-- Private Chat Modal -->
+  <div class="modal fade" id="privateChatModal" tabindex="-1">
+    <div class="modal-dialog modal-lg" style="max-width:800px;">
+      <div class="modal-content" style="border-radius:15px; overflow:hidden;">
+        <div class="modal-header" style="background:linear-gradient(135deg,#4b0082,#6a0dad); color:white;">
+          <h5 class="modal-title">
+            <i class="fas fa-user-circle me-2"></i>
+            Chat with <span id="modalUsername"></span>
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body" style="display:flex; flex-direction:column; height:450px; background:#f5f5f5;">
+          <div id="privateMessages" style="
+              flex:1;
+              overflow-y:auto;
+              padding:15px;
+              display:flex;
+              flex-direction:column;
+              gap:10px;
+              background:url('https://i.imgur.com/OrZCk6G.png') repeat;
+              background-size:contain;
+          "></div>
+
+          <div style="display:flex; padding:10px; background:white; border-top:1px solid #ccc;">
+            <input id="privateMessageInput" type="text"
+              placeholder="Type a message..."
+              style="flex:1; padding:10px 14px; border-radius:25px; border:1px solid #ccc; outline:none;"/>
+            <button onclick="sendPrivateMessage()" style="
+              margin-left:8px;
+              border:none;
+              border-radius:50%;
+              width:45px;
+              height:45px;
+              background:#4b0082;
+              color:#fff;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              font-size:18px;
+              transition:0.3s;
+            ">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="content">
+    <div style="flex:3; display:flex; flex-direction:column;">
+      <div id="messages"></div>
+      <div id="messageInput">
+        <input id="newMessage" placeholder="Type your message..."/>
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+
+    <div id="userPanel">
+      <div>
+        <h4>Online Users</h4>
+        <div id="users"></div>
+      </div>
+      <button id="openPrivateChatBtn"><i class="fas fa-comment-dots"></i> Go to Private Chat</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    const username = "{{ username }}";
+    let currentPrivateUser = '';
+
+    // Load public chat
+    function loadConversations() {
+      fetch('/api/conversations')
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById('messages');
+          container.innerHTML = '';
+          data.forEach(msg => {
+            const div = document.createElement('div');
+            div.classList.add('chat-bubble');
+            if (msg.username === username) {
+              div.classList.add('sent');
+              div.innerHTML = `<strong>You:</strong><br>${msg.message}`;
+            } else {
+              div.classList.add('received');
+              div.innerHTML = `<strong>${msg.username}:</strong><br>${msg.message}`;
+            }
+            container.appendChild(div);
+          });
+          container.scrollTop = container.scrollHeight;
+        });
+    }
+
+    // Load users
+    function loadUsers() {
+      fetch('/api/users')
+        .then(res => res.text())
+        .then(csv => {
+          const lines = csv.trim().split('\n');
+          const users = lines.map(l => {
+            const p = l.split(',');
+            return { username: p[5], online: p[7] };
+          });
+          const container = document.getElementById('users');
+          container.innerHTML = '';
+          users.forEach(u => {
+            if (u.online.trim().toLowerCase() === 'online' && u.username !== username) {
+              const userDiv = document.createElement('div');
+              userDiv.className = 'user' + (u.username === currentPrivateUser ? ' selected' : '');
+              userDiv.textContent = u.username;
+              userDiv.onclick = () => {
+                currentPrivateUser = u.username;
+                document.querySelectorAll('.user').forEach(el => el.classList.remove('selected'));
+                userDiv.classList.add('selected');
+              };
+              container.appendChild(userDiv);
+            }
+          });
+        });
+    }
+
+    // Open private chat
+    function openPrivateChat() {
+      if (!currentPrivateUser) {
+        alert('Please select a user first.');
+        return;
+      }
+      document.getElementById('modalUsername').innerText = currentPrivateUser;
+      loadPrivateMessages();
+      new bootstrap.Modal(document.getElementById('privateChatModal')).show();
+    }
+
+    // Load private messages
+    function loadPrivateMessages() {
+      if (!currentPrivateUser) return;
+      fetch(`/api/private_conversations?user=${encodeURIComponent(currentPrivateUser)}&sender=${encodeURIComponent(username)}`)
+        .then(res => res.json())
+        .then(data => {
+          const c = document.getElementById('privateMessages');
+          c.innerHTML = '';
+          data.forEach(msg => {
+            const m = document.createElement('div');
+            m.classList.add('chat-bubble', msg.sender === username ? 'sent' : 'received');
+            m.innerHTML = `<strong>${msg.sender === username ? 'You' : msg.sender}:</strong><br>${msg.message}`;
+            c.appendChild(m);
+          });
+          c.scrollTop = c.scrollHeight;
+        });
+    }
+
+    // Send private message
+    function sendPrivateMessage() {
+      const input = document.getElementById('privateMessageInput');
+      const message = input.value.trim();
+      if (!message || !currentPrivateUser) return;
+      fetch('/api/post_private_message', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ sender: username, recipient: currentPrivateUser, message })
+      }).then(() => {
+        input.value = '';
+        loadPrivateMessages();
+      });
+    }
+
+    // Send public message
+    function sendMessage() {
+      const input = document.getElementById('newMessage');
+      const message = input.value.trim();
+      if (!message) return;
+      fetch('/api/post_message', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ username, message })
+      }).then(() => {
+        input.value = '';
+        loadConversations();
+      });
+    }
+
+    document.getElementById('openPrivateChatBtn').addEventListener('click', openPrivateChat);
+
+    setInterval(() => {
+      loadConversations();
+      loadUsers();
+    }, 3000);
+
+    loadConversations();
+    loadUsers();
+     
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

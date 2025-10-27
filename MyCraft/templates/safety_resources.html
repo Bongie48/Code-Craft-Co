@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Safety Resources | DangerAlert</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Bootstrap & Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #ff4d4d, #F5F5F5);
+      color: white;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 🌈 Navbar Styling */
+    nav {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px 40px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      backdrop-filter: blur(12px);
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    nav h1 {
+      font-size: 1.8em;
+      display: flex;
+      align-items: center;
+      margin: 0;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .profile span {
+      font-weight: 600;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 20px;
+      padding: 8px 18px;
+      border: 1px solid #fff;
+      border-radius: 25px;
+      transition: background 0.3s, transform 0.2s;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+
+    nav a:hover {
+      background: #fff;
+      color: #4b0082;
+      transform: translateY(-2px);
+    }
+
+    /* 🧭 Sidebar */
+    .sidebar {
+      width: 250px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+      height: calc(100vh);
+      padding-top: 80px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 2px 0 15px rgba(0,0,0,0.2);
+      backdrop-filter: blur(8px);
+      overflow-y: auto;
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+      background-color: rgba(255,255,255,0.4);
+      border-radius: 3px;
+    }
+
+    .sidebar a.sidebar-btn {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 80%;
+      padding: 15px;
+      margin: 8px 0;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      text-decoration: none;
+      font-size: 1em;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar a.sidebar-btn:hover, .sidebar a.sidebar-btn.active {
+      background: rgba(255,255,255,0.3);
+      box-shadow: 0 0 10px #fff inset, 0 0 20px #fff;
+      transform: translateY(-2px);
+    }
+
+    .sidebar a.sidebar-btn i {
+      margin-right: 12px;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    /* 📚 Content */
+    .content {
+      margin-left: 250px;
+      padding: 100px 40px;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    .section-header {
+      font-size: 2rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .section-header i {
+      margin-right: 12px;
+      color: #ffd700;
+    }
+
+    /* 🧠 Resource Cards */
+    .resource-card {
+      background: rgba(255,255,255,0.2);
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .resource-card:hover {
+      transform: scale(1.03);
+      background: rgba(255,255,255,0.3);
+      border: 2px solid #fff;
+    }
+
+    .resource-card h5 {
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .btn-outline-light {
+      border-color: #fff;
+      color: #fff;
+    }
+
+    .btn-outline-light:hover {
+      background-color: #fff;
+      color: #4b0082;
+    }
+
+    @media (max-width: 900px) {
+      .sidebar { width: 200px; }
+      .content { margin-left: 200px; }
+    }
+
+    @media (max-width: 700px) {
+      .sidebar { display: none; }
+      .content { margin: 80px 20px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 🌟 Navbar -->
+  <nav>
+    <h1>🛡️ Safe Connect</h1>
+    <div class="profile">
+      <span>👋 Welcome, gxekiwe48</span>
+      <a href="/logout"><i class="fas fa-door-open"></i> Logout</a>
+    </div>
+  </nav>
+
+  <!-- 🧭 Sidebar -->
+  <div class="sidebar">
+    <a href="/dashboard" class="sidebar-btn"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="/safety-map" class="sidebar-btn"><i class="fas fa-map"></i> Safety Map</a>
+    <a href="/community" class="sidebar-btn"><i class="fas fa-comments"></i> Community Forum</a>
+    <a href="/emergency_alert" class="sidebar-btn"><i class="fas fa-bolt"></i> Emergency Alert</a>
+  <a href="/incident_reporting" class="sidebar-btn"><i class="fas fa-edit"></i> Incident Reporting</a>
+  <a href="/safety_resources" class="sidebar-btn"><i class="fas fa-book"></i> Safety Resources</a>
+  </div>
+
+  <!-- 📚 Main Content -->
+  <div class="content">
+    <h2 class="section-header"><i class="fas fa-shield-heart"></i> Safety Resources & Support</h2>
+
+    <div id="resourcesContainer">
+      <p>Loading safety resources...</p>
+    </div>
+  </div>
+
+  <script>
+    async function loadResources() {
+      const res = await fetch("/api/safety_resources");
+      const data = await res.json();
+
+      const container = document.getElementById("resourcesContainer");
+      container.innerHTML = `
+        <div class="resource-card">
+          <h5><i class="fas fa-hands-helping text-warning"></i> Support Services</h5>
+          ${data.support_services.map(service => `
+            <div class="mt-2">
+              <p><strong>${service.name}</strong> — ${service.description}</p>
+              <p><strong>Contact:</strong> ${service.contact}</p>
+              <a href="${service.link}" target="_blank" class="btn btn-outline-light btn-sm">
+                Visit Website <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          `).join("")}
+        </div>
+
+        <div class="resource-card">
+          <h5><i class="fas fa-book text-warning"></i> Educational Materials</h5>
+          ${data.educational_materials.map(material => `
+            <div class="mt-2">
+              <p><strong>${material.title}</strong> — ${material.summary}</p>
+              <a href="${material.link}" target="_blank" class="btn btn-outline-light btn-sm">
+                Read More <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    window.onload = loadResources;
+  </script>
+</body>
+</html>

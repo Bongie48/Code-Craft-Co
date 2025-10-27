@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DangerAlert - Stay Safe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #fff;
+      color: #333;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 60px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      z-index: 1000;
+      transition: background 0.3s, padding 0.3s;
+    }
+
+    header.scrolled {
+      background: rgba(255,255,255,0.98);
+      padding: 10px 40px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      font-weight: 700;
+      color: #111;
+      letter-spacing: 1px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #333;
+      margin-left: 30px;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #0078ff;
+    }
+
+    .menu-toggle {
+      display: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+    }
+
+    .hero {
+      height: 100vh;
+      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1603570419264-ef8a9d3d8a8d') center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: #fff;
+      text-align: center;
+      padding: 0 20px;
+      transition: all 0.5s ease-in-out;
+    }
+
+    .hero h2 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      animation: fadeInDown 1s ease forwards;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin-bottom: 30px;
+      opacity: 0;
+      animation: fadeInUp 1.5s ease forwards;
+      animation-delay: 0.5s;
+    }
+
+    .btn-primary {
+      padding: 12px 30px;
+      background-color: #0078ff;
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.3s;
+      opacity: 0;
+      animation: fadeInUp 1.5s ease forwards;
+      animation-delay: 1s;
+    }
+
+    .btn-primary:hover {
+      background-color: #005ec7;
+    }
+
+    @keyframes fadeInDown {
+      from { transform: translateY(-30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    section {
+      padding: 100px 60px;
+      transition: all 0.5s ease-in-out;
+    }
+
+    .about {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .about h2 {
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+      color: #111;
+    }
+
+    .about p {
+      max-width: 800px;
+      color: #555;
+    }
+
+    footer {
+      background-color: #111;
+      color: #fff;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    footer p {
+      font-size: 0.9rem;
+    }
+
+    @media(max-width: 768px) {
+      header {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 15px 30px;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      nav {
+        position: absolute;
+        top: 60px;
+        right: 0;
+        width: 100%;
+        background: #fff;
+        flex-direction: column;
+        align-items: center;
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height 0.4s ease;
+      }
+
+      nav.active {
+        max-height: 200px;
+      }
+
+      nav a {
+        display: block;
+        margin: 15px 0;
+      }
+
+      .hero h2 {
+        font-size: 2.2rem;
+      }
+      .about {
+        padding: 80px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header id="navbar">
+    <h1>Safe Connect</h1>
+    <div class="menu-toggle" id="menu-toggle">&#9776;</div>
+    <nav id="nav-menu">
+      <a href="#about">About</a>
+      <a href="/login">Login</a>
+      <a href="/register">Register</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="hero">
+    <h2>Stay Safe. Stay Connected.</h2>
+    <p>Empowering communities across South Africa through real-time safety alerts, live tracking, and community support to prevent rape and gender-based violence.</p>
+    <a href="/register" class="btn-primary">Join the Community</a>
+  </section>
+
+  <section id="about" class="about">
+    <h2>About DangerAlert</h2>
+    <p>
+      DangerAlert is an initiative dedicated to mitigating rape and gender-based violence in South Africa through real-time technology and community support. The system uses verified police data to notify users when they are near locations linked to past incidents. In emergencies, the app triggers a unique loud DangerAlert sound, shares your live location, records evidence, and instantly notifies nearby registered users, chosen contacts, and law enforcement.
+    </p>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 DangerAlert. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+      const navbar = document.getElementById('navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const navMenu = document.getElementById('nav-menu');
+
+    menuToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+    });
+
+    // Smooth scroll to sections
+    document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+        if (window.innerWidth <= 768) {
+          navMenu.classList.remove('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

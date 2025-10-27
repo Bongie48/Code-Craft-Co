@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard | DangerAlert</title>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #ff4d4d, #F5F5F5);
+      color: #fff;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Navbar styling with fit content and icons */
+    nav {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px 40px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      backdrop-filter: blur(12px);
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    nav h1 {
+      font-size: 1.8em;
+      display: flex;
+      align-items: center;
+      margin: 0;
+    }
+    nav h1::after {
+      content: '✨';
+      margin-left: 10px;
+    }
+
+    /* Profile section in navbar */
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .profile span {
+      font-weight: 600;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 20px;
+      padding: 8px 18px;
+      border: 1px solid #fff;
+      border-radius: 25px;
+      transition: background 0.3s, transform 0.2s;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+    nav a i {
+      margin-right: 8px;
+    }
+    nav a:hover {
+      background: #fff;
+      color: #4b0082;
+      transform: translateY(-2px);
+    }
+
+    /* Sidebar with scrollable options */
+    .sidebar {
+      width: 250px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+      height: calc(100vh);
+      padding-top: 80px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 2px 0 15px rgba(0,0,0,0.2);
+      backdrop-filter: blur(8px);
+      overflow-y: auto;
+    }
+    /* Custom scrollbar for sidebar */
+    .sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .sidebar::-webkit-scrollbar-thumb {
+      background-color: rgba(255,255,255,0.4);
+      border-radius: 3px;
+    }
+
+    /* Sidebar buttons styling with icons */
+    .sidebar a.sidebar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 80%;
+  padding: 15px;
+  margin: 8px 0;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  text-decoration: none;
+  font-size: 1em;
+  transition: all 0.3s ease;
+}
+.sidebar a.sidebar-btn:hover {
+  background: rgba(255,255,255,0.3);
+  box-shadow: 0 0 10px #fff inset, 0 0 20px #fff;
+  transform: translateY(-2px);
+}
+.sidebar a.sidebar-btn i {
+  margin-right: 12px;
+  min-width: 20px;
+  text-align: center;
+}
+    /* Content styling */
+    .content {
+      margin-left: 250px;
+      padding: 100px 40px;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    /* Cards styling */
+    .card {
+      background: rgba(255,255,255,0.2);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+    .card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      background: rgba(255,255,255,0.3);
+      border: 2px solid #fff;
+    }
+
+    /* Carousel height adjustment */
+    #carouselExampleIndicators {
+      height: 400px; /* <-- Adjust this value as needed */
+    }
+    #carouselExampleIndicators .carousel-inner,
+    #carouselExampleIndicators .carousel-item,
+    #carouselExampleIndicators .carousel-item img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover; /* ensures images fill the area nicely */
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 900px) {
+      .sidebar {
+        width: 200px;
+      }
+      .content {
+        margin-left: 200px;
+      }
+    }
+    @media (max-width: 700px) {
+      .sidebar {
+        display: none;
+      }
+      .content {
+        margin: 80px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav>
+    <h1>🛡️ Safe Connect</h1>
+    <div class="profile">
+      <span>👋 Welcome, {{ username }}</span>
+      <a href="/logout"><i class="fas fa-door-open"></i> Logout</a>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+  <a href="/dashboard" class="sidebar-btn"><i class="fas fa-home"></i> Dashboard</a>
+  <a href="/safety-map" class="sidebar-btn"><i class="fas fa-map"></i> Safety Map</a>
+  <a href="/community" class="sidebar-btn"><i class="fas fa-comments"></i> Community Forum</a>
+  <a href="/emergency_alert" class="sidebar-btn"><i class="fas fa-bolt"></i> Emergency Alert</a>
+  <a href="/incident_reporting" class="sidebar-btn"><i class="fas fa-edit"></i> Incident Reporting</a>
+  <a href="/safety_resources" class="sidebar-btn"><i class="fas fa-book"></i> Safety Resources</a>
+</div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <!-- Bootstrap Carousel with fixed height -->
+    <div id="carouselExampleIndicators" class="carousel slide mb-4" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+      </div>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="{{ url_for('static', filename='images/Alert.jpg') }}" class="d-block w-100" alt="Alert System" />
+        </div>
+        <div class="carousel-item">
+          <img src="{{ url_for('static', filename='images/Report.jpg') }}" class="d-block w-100" alt="Incident Reporting" />
+        </div>
+        <div class="carousel-item">
+          <img src="{{ url_for('static', filename='images/map.jpg') }}" class="d-block w-100" alt="Safety Map" />
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+
+    <!-- Other Cards -->
+    <div class="card">
+      <h2><i class="fas fa-chart-line"></i> Dashboard Overview</h2>
+      <p>🛡️ Monitor your recent activities, alerts, and safety statistics here.</p>
+    </div>
+
+    <div class="card">
+      <h2><i class="fas fa-users"></i> Community Updates</h2>
+      <p>🤝 Connect with others, share your experiences, and get live updates on safety alerts near you.</p>
+    </div>
+
+    <div class="card">
+      <h2><i class="fas fa-ambulance"></i> Emergency Tools</h2>
+      <p>📳 Use the Emergency Alert or DangerAlert sound feature to alert others and authorities during emergencies.</p>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

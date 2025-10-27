@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Safety Map | DangerAlert</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #ff4d4d, #F5F5F5);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    /* Navbar */
+    nav {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px 40px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      backdrop-filter: blur(12px);
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    nav h1 {
+      font-size: 1.8em;
+      display: flex;
+      align-items: center;
+      margin: 0;
+    }
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .profile span { font-weight: 600; }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 20px;
+      padding: 8px 18px;
+      border: 1px solid #fff;
+      border-radius: 25px;
+      transition: background 0.3s, transform 0.2s;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+    nav a:hover {
+      background: #fff;
+      color: #4b0082;
+      transform: translateY(-2px);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+      height: 100vh;
+      padding-top: 80px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 2px 0 15px rgba(0,0,0,0.2);
+      backdrop-filter: blur(8px);
+    }
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 80%;
+      padding: 15px;
+      margin: 8px 0;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      text-decoration: none;
+      font-size: 1em;
+      transition: all 0.3s ease;
+    }
+    .sidebar a:hover {
+      background: rgba(255,255,255,0.3);
+      box-shadow: 0 0 10px #fff inset, 0 0 20px #fff;
+      transform: translateY(-2px);
+    }
+    .sidebar a i {
+      margin-right: 12px;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    /* Main content */
+    .content {
+      margin-top: 80px;
+      margin-left: 250px;
+      height: calc(100vh - 80px);
+      position: relative;
+      padding: 0 20px;
+    }
+    #map {
+      height: 100%;
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    /* Legend */
+    #legend {
+      background: rgba(255,255,255,0.8);
+      padding: 10px;
+      border-radius: 8px;
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      font-size: 14px;
+      z-index: 1001;
+      color: black;
+    }
+    #legend div {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+      position: relative;
+    }
+    #legend span {
+      display: inline-block;
+      width: 0;
+      height: 0;
+      margin-right: 8px;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      cursor: pointer;
+    }
+
+    .high-risk { border-bottom: 20px solid red; }
+    .moderate-risk { border-bottom: 20px solid orange; }
+    .low-risk { border-bottom: 20px solid green; }
+
+    /* Triangle markers */
+    .map-triangle-icon {
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-bottom: 14px solid red;
+      transform: rotate(180deg);
+    }
+    @media(max-width: 900px) { .content { margin-left: 0; } }
+    @media(max-width: 700px) { .sidebar { display: none; } }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <h1>🛡️ Safe Connect</h1>
+    <div class="profile">
+      <span>👋 Welcome,  {{ username }}</span>
+      <span id="username-display"></span>
+      <a href="/logout"><i class="fas fa-door-open"></i> Logout</a>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <a href="/dashboard"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="/safety-map"><i class="fas fa-map"></i> Safety Map</a>
+    <a href="/community"><i class="fas fa-comments"></i> Community Forum</a>
+    <a href="/emergency_alert" class="sidebar-btn"><i class="fas fa-bolt"></i> Emergency Alert</a>
+  <a href="/incident_reporting" class="sidebar-btn"><i class="fas fa-edit"></i> Incident Reporting</a>
+  <a href="/safety_resources" class="sidebar-btn"><i class="fas fa-book"></i> Safety Resources</a>
+  </div>
+
+  <!-- Main content -->
+  <div class="content">
+    <div id="map"></div>
+    <div id="legend">
+      <div><span class="high-risk"></span> GBV or Rape Hotspot</div>
+      <div><span class="moderate-risk"></span> Assault or Theft Reports</div>
+      <div><span class="low-risk"></span> Minor Safety Concerns</div>
+    </div>
+  </div>
+
+  <!-- JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  const username = "{{ username }}";
+  document.getElementById("username-display").innerText = username || "User";
+
+  // Centered in Orlando East
+  const map = L.map('map').setView([-26.259, 27.928], 15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // Load risk areas dynamically
+  fetch('/api/risk-areas')
+    .then(res => res.json())
+    .then(data => {
+      data.forEach(area => {
+        let color = "green";
+        if (area.description.toLowerCase().includes("gbv") || area.description.toLowerCase().includes("rape")) {
+          color = "red";
+        } else if (area.description.toLowerCase().includes("assault") || area.description.toLowerCase().includes("theft")) {
+          color = "orange";
+        }
+
+        // 🔺 Make triangles larger & visible
+        const triangleIcon = L.divIcon({
+  className: 'map-triangle-icon',
+  html: `<div style="width: 0; height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid ${color};
+    transform: rotate(180deg);"></div>`,
+  iconSize: [5, 5],
+  iconAnchor: [5, 5]
+});
+
+        const marker = L.marker([area.lat, area.lon], { icon: triangleIcon }).addTo(map);
+
+        // 🧠 Show popup on hover
+        marker.bindPopup(`<b>${area.description}</b><br>Type: ${area.type}`);
+
+        marker.on('mouseover', function () {
+          this.openPopup();
+        });
+        marker.on('mouseout', function () {
+          this.closePopup();
+        });
+      });
+    });
+
+  // Show user location
+  let userMarker;
+  if (navigator.geolocation) {
+    navigator.geolocation.watchPosition(pos => {
+      const { latitude, longitude } = pos.coords;
+      if (userMarker) map.removeLayer(userMarker);
+      userMarker = L.marker([latitude, longitude], {
+        icon: L.icon({
+          iconUrl: 'https://cdn-icons-png.flaticon.com/512/64/64113.png',
+          iconSize: [30, 30]
+        })
+      }).addTo(map).bindPopup("📍 You are here");
+    });
+  }
+</script>
+</body>
+</html>
